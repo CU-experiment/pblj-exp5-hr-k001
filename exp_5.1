@@ -1,0 +1,29 @@
+import java.util.*;
+
+class SumCalculator {
+    static int calculateSum(List<Integer> numbers) {
+        int sum = 0;
+        for (Integer num : numbers) {
+            sum += num;
+        }
+        return sum;
+    }
+
+    static List<Integer> parseNumbers(List<String> strNumbers) {
+        List<Integer> numbers = new ArrayList<>();
+        for (String str : strNumbers) {
+            numbers.add(Integer.parseInt(str));
+        }
+        return numbers;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter numbers separated by space:");
+        String input = sc.nextLine();
+        List<String> strNumbers = Arrays.asList(input.split(" "));
+        List<Integer> numbers = parseNumbers(strNumbers);
+        System.out.println("Sum: " + calculateSum(numbers));
+        sc.close();
+    }
+}
