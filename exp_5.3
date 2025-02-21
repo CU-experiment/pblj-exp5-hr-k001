@@ -1,0 +1,76 @@
+import java.io.*;
+import java.util.*;
+
+class Employee implements Serializable {
+    private static final long serialVersionUID = 1L;
+    int id;
+    String name;
+    String designation;
+    double salary;
+
+    Employee(int id, String name, String designation, double salary) {
+        this.id = id;
+        this.name = name;
+        this.designation = designation;
+        this.salary = salary;
+    }
+
+    public String toString() {
+        return "ID: " + id + ", Name: " + name + ", Designation: " + designation + ", Salary: " + salary;
+    }
+}
+
+public class EmployeeManagement {
+    static final String FILE_NAME = "employees.ser";
+
+    static void addEmployee(Employee employee) {
+        List<Employee> employees = deserializeEmployees();
+        employees.add(employee);
+        serializeEmployees(employees);
+    }
+
+    static void serializeEmployees(List<Employee> employees) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            oos.writeObject(employees);
+            System.out.println("Employee details saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving employee details: " + e.getMessage());
+        }
+    }
+
+    static List<Employee> deserializeEmployees() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            return (List<Employee>) ois.readObject();
+        } catch (FileNotFoundException e) {
+            return new ArrayList<>();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error retrieving employee details: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("1. Add Employee\n2. Display All\n3. Exit");
+            int choice = sc.nextInt();
+            if (choice == 1) {
+                System.out.println("Enter ID, Name, Designation, Salary:");
+                Employee employee = new Employee(sc.nextInt(), sc.next(), sc.next(), sc.nextDouble());
+                addEmployee(employee);
+            } else if (choice == 2) {
+                List<Employee> employees = deserializeEmployees();
+                if (employees.isEmpty()) {
+                    System.out.println("No employees found.");
+                } else {
+                    for (Employee e : employees) {
+                        System.out.println(e);
+                    }
+                }
+            } else if (choice == 3) {
+                break;
+            }
+        }
+        sc.close();
+    }
+}
